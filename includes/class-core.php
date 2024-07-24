@@ -45,6 +45,8 @@ final class Core {
 		\add_filter( 'rest_dispatch_request', [ __CLASS__, 'restrict_patterns' ], 12, 3 );
 		\add_filter( 'should_load_remote_block_patterns', '__return_false' );
 		\add_action( 'init', [ __CLASS__, 'block_pattern_categories' ] );
+
+		require_once \get_template_directory() . '/src/blocks/hook/view.php';
 	}
 
 	/**
@@ -102,7 +104,11 @@ final class Core {
 	public static function editor_scripts() {
 		// Enqueue editor JavaScript.
 		wp_enqueue_script( 'editor-script', get_theme_file_uri( '/dist/editor.js' ), array( 'wp-blocks', 'wp-dom' ), wp_get_theme()->get( 'Version' ), true );
+
+		wp_enqueue_script( 'newspack-block-theme-blocks', get_theme_file_uri( '/dist/blocks.js' ), [], wp_get_theme()->get( 'Version' ), true );
+		wp_enqueue_style( 'newspack-block-theme-blocks', get_theme_file_uri( '/dist/blocks.css' ), [], wp_get_theme()->get( 'Version' ) );
 	}
+
 
 	/**
 	 * Add block variations.

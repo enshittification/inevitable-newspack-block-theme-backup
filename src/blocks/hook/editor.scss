@@ -1,0 +1,18 @@
+.wp-block-newspack-block-theme-hook {
+	border: 1px solid #000;
+	font-family: monospace;
+	padding: 0.5em;
+	position: relative;
+
+	&:before {
+		background: #000;
+		border-radius: 2px 2px 0 0;
+		content: 'Hook Block';
+		color: #fff;
+		display: inline-block;
+		font-size: 10px;
+		inset: auto auto 100% 10px;
+		padding: 0 5px;
+		position: absolute;
+	}
+}

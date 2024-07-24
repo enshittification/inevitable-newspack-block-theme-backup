@@ -2,6 +2,7 @@
  **** WARNING: No ES6 modules here. Not transpiled! ****
  */
 /* eslint-disable import/no-nodejs-modules */
+/* eslint-disable @typescript-eslint/no-var-requires */
 
 /**
  * External dependencies
@@ -25,15 +26,23 @@ const frontEnd = fs
 			[ filename.replace( '.js', '' ) ]: path.join( __dirname, 'src', 'js', 'front-end', filename ),
 		} ),
 		{}
+
 	);
 const style = path.join( __dirname, 'src', 'scss', 'style.scss' );
 
 const webpackConfig = getBaseWebpackConfig(
 	{ WP: true },
 	{
-		entry: { editor, ...frontEnd },
+		entry: {
+			editor,
+			...frontEnd,
+			blocks: path.join( __dirname, 'src', 'blocks', 'index.js' ),
+			'hook': path.join( __dirname, 'src', 'blocks', 'hook', 'view.js' ),
+		},
 		'output-path': path.join( __dirname, 'dist' ),
-	}
+	},
+
+
 );
 const styleConfig = getBaseWebpackConfig(
 	{ WP: false },

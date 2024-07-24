@@ -42,7 +42,6 @@ node_modules
 .circleci
 /tests
 /bin
-/src
 /release
 .cache
 codecov
