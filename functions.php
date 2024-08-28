@@ -22,4 +22,5 @@ if ( ! defined( 'NEWSPACK_BLOCK_THEME_FILE' ) ) {
 
 // Include theme resources.
 require_once NEWSPACK_BLOCK_THEME_FILE_PATH . '/includes/class-core.php';
+require_once NEWSPACK_BLOCK_THEME_FILE_PATH . '/includes/blocks/class-blocks.php';
 require_once NEWSPACK_BLOCK_THEME_FILE_PATH . '/includes/class-jetpack.php';
