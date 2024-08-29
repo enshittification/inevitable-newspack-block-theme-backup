@@ -5,53 +5,15 @@
  * WordPress dependencies
  */
 import { registerPlugin } from '@wordpress/plugins';
-import { PluginDocumentSettingPanel } from '@wordpress/edit-post';
-import { __ } from '@wordpress/i18n';
 import { withSelect, withDispatch } from '@wordpress/data';
 import { compose } from '@wordpress/compose';
-import { useState, useEffect } from '@wordpress/element';
-import { TextareaControl } from '@wordpress/components';
+import { useEffect } from '@wordpress/element';
 
 const META_FIELD_NAME = newspack_block_theme_subtitle_block.post_meta_name;
 
-const connectWithSelect = withSelect( select => ( {
-	subtitle: select( 'core/editor' ).getEditedPostAttribute( 'meta' )[ META_FIELD_NAME ],
-} ) );
-
-const decorate = compose(
-	connectWithSelect,
-	withDispatch( dispatch => ( {
-		saveSubtitle: subtitle => {
-			dispatch( 'core/editor' ).editPost( {
-				meta: {
-					[ META_FIELD_NAME ]: subtitle,
-				},
-			} );
-		},
-	} ) )
-);
-
-const SubtitleEditorComponent = ( { subtitle, saveSubtitle } ) => {
-	const [ value, setValue ] = useState( subtitle );
-
-	useEffect( () => {
-		saveSubtitle( value );
-	}, [ value ] );
-
-	return (
-		<TextareaControl
-			value={ value }
-			onChange={ setValue }
-			style={ { marginTop: '10px', width: '100%' } }
-		/>
-	);
-};
-
-const SubtitleEditor = decorate( SubtitleEditorComponent );
-
 const SUBTITLE_ID = 'newspack-post-subtitle-element';
 const SUBTITLE_STYLE_ID = 'newspack-post-subtitle-element-style';
-const appendSubtitleToTitleDOMElement = subtitle => {
+const appendSubtitleToTitleDOMElement = ( subtitle, callback ) => {
 	const titleWrapperEl = document.querySelector( '.edit-post-visual-editor__post-title-wrapper' );
 
 	if ( titleWrapperEl && typeof subtitle === 'string' ) {
@@ -76,6 +38,10 @@ const appendSubtitleToTitleDOMElement = subtitle => {
 
 		if ( ! subtitleEl ) {
 			subtitleEl = document.createElement( 'div' );
+			subtitleEl.setAttribute( 'contenteditable', 'plaintext-only' );
+			subtitleEl.addEventListener( 'input', () => {
+				callback( subtitleEl.innerHTML );
+			} );
 			subtitleEl.id = SUBTITLE_ID;
 			titleParent.insertBefore( subtitleEl, titleWrapperEl.nextSibling );
 		}
@@ -84,27 +50,32 @@ const appendSubtitleToTitleDOMElement = subtitle => {
 };
 
 /**
- * Component to be used as a panel in the Document tab of the Editor.
+ * This functionality is handled via DOM interaction, which is risky, but in the name of WYSIWYG.
+ * The post subtitle is edited directly beneath the post title, and no block is
+ * registered in the post editor – this block will only be registered in the site editor.
  */
-const NewspackSubtitlePanel = ( { subtitle } ) => {
-	// Update the DOM when subtitle value changes.
+const NewspackSubtitlePanel = ( { subtitle, saveSubtitle } ) => {
 	useEffect( () => {
-		appendSubtitleToTitleDOMElement( subtitle );
-	}, [ subtitle ] );
-
-	return (
-		<PluginDocumentSettingPanel
-			name="newspack-subtitle"
-			title={ __( 'Article Subtitle', 'newspack' ) }
-			className="newspack-subtitle"
-		>
-			{ __( 'Set a Subtitle for the Article', 'newspack' ) }
-			<SubtitleEditor />
-		</PluginDocumentSettingPanel>
-	);
+		appendSubtitleToTitleDOMElement( subtitle, saveSubtitle );
+	}, [] );
 };
 
+const connectWithStore = compose(
+	withSelect( select => ( {
+		subtitle: select( 'core/editor' ).getEditedPostAttribute( 'meta' )[ META_FIELD_NAME ],
+	} ) ),
+	withDispatch( dispatch => ( {
+		saveSubtitle: subtitle => {
+			dispatch( 'core/editor' ).editPost( {
+				meta: {
+					[ META_FIELD_NAME ]: subtitle,
+				},
+			} );
+		},
+	} ) )
+);
+
 registerPlugin( 'plugin-document-setting-panel-newspack-subtitle', {
-	render: connectWithSelect( NewspackSubtitlePanel ),
+	render: connectWithStore( NewspackSubtitlePanel ),
 	icon: null,
 } );

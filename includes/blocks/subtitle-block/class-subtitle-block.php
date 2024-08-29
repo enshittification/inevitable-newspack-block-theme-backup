@@ -68,18 +68,16 @@ final class Subtitle_Block {
 	 * "viewable".
 	 */
 	public static function enqueue_block_editor_assets() {
+		$script_data = [
+			'post_meta_name' => self::POST_META_NAME,
+		];
 		$post_type = \get_current_screen()->post_type;
 		if ( $post_type !== 'post' ) {
 			return;
 		}
-		\wp_enqueue_script( 'newspack-block-theme-subtitle-block-editor', \get_theme_file_uri( 'dist/subtitle-block-editor.js' ), [], NEWSPACK_BLOCK_THEME_VERSION, true );
-		\wp_localize_script(
-			'newspack-block-theme-subtitle-block-editor',
-			'newspack_block_theme_subtitle_block',
-			[
-				'post_meta_name' => self::POST_META_NAME,
-			]
-		);
+		$handle = 'newspack-block-theme-subtitle-block-post-editor';
+		\wp_enqueue_script( $handle, \get_theme_file_uri( 'dist/subtitle-block-post-editor.js' ), [], NEWSPACK_BLOCK_THEME_VERSION, true );
+		\wp_localize_script( $handle, 'newspack_block_theme_subtitle_block', $script_data );
 	}
 }
 Subtitle_Block::init();
