@@ -40,6 +40,8 @@ final class Core {
 
 		// Make theme available for translation.
 		\load_theme_textdomain( 'newspack-block-theme' );
+
+		\add_theme_support( 'post-subtitle' );
 	}
 
 	/**
