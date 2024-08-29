@@ -6,7 +6,6 @@
  * @link https://developer.wordpress.org/themes/basics/theme-functions/
  *
  * @package Newspack Block Theme
- * @since Newspack Block Theme 1.0
  */
 
 defined( 'ABSPATH' ) || exit;

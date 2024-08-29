@@ -50,7 +50,6 @@ final class Core {
 	 * @return void
 	 */
 	public static function theme_styles() {
-
 		// Register theme stylesheet.
 		\wp_register_style(
 			'newspack_block_theme-style',
