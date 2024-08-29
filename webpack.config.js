@@ -35,7 +35,6 @@ const frontEnd = fs
 const blocks = fs
 	.readdirSync( path.join( __dirname, 'includes', 'blocks' ) )
 	.reduce( ( acc, asset ) => {
-		console.log( asset );
 		if ( fs.lstatSync( path.join( __dirname, 'includes', 'blocks', asset ) ).isDirectory() ) {
 			fs.readdirSync( path.join( __dirname, 'includes', 'blocks', asset ) )
 				.filter( file => /\.(j|t)sx?$/.test( file ) )
